@@ -1,0 +1,103 @@
+num_sixteen = {
+    "0": "0",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+    "6": "6",
+    "7": "7",
+    "8": "8",
+    "9": "9",
+    "10": "A",
+    "11": "B",
+    "12": "B",
+    "13": "D",
+    "14": "E",
+    "15": "F",
+}
+
+sixteen_num = {
+    "0": "0",
+    "1": "1",
+    "2": "2",
+    "3": "3",
+    "4": "4",
+    "5": "5",
+    "6": "6",
+    "7": "7",
+    "8": "8",
+    "9": "9",
+    "A": "10",
+    "B": "11",
+    "C": "12",
+    "D": "13",
+    "E": "14",
+    "F": "15",
+}
+
+def int_fract(num, base, base_2):
+    int_part = ""
+    fract_part = ""
+    flag = False
+    for i in num:
+        if i == ",":
+            flag = True
+        if flag == False:
+            int_part += i
+        elif flag and i != ",":
+            fract_part += i
+    if base_2 == 10:
+        return f"{int_conv_ten(int_part, fract_part, base)}"
+    else:
+        return f"{int_conv_other(int_part, fract_part, base_2)}"
+    
+
+def int_conv_ten(int_part, fract_part, base):
+    result = 0
+    length = len(int_part) - 1
+    for i in str(int_part):
+        result += int(sixteen_num[i]) * (int(base) ** length)
+        length -= 1
+    for j in fract_part:
+        result += int(sixteen_num[j]) * (int(base) ** length)
+        length -= 1
+    return result
+
+def int_conv_other(int_part, fract_part, base_2):
+    remainder = int_part
+    quotient = int(int_part)
+    fract_num = fract_part
+    res_int = ""
+    res_fract = ""
+    lenght_fract = len(str(fract_num))
+    count = lenght_fract
+    anti_fraсt_num = ""
+    print(int_part)
+    while quotient > (base_2 - 1):
+        remainder = quotient % base_2
+        quotient = quotient // base_2
+        res_int += str(remainder)
+    res_int += str(quotient)
+    res_int = res_int[::-1]
+    while count > 0:
+        fract_num = int(fract_num) * base
+        res_fract += str(int(fract_num) // (10 ** int(len(str(fract_num)))))
+        fract_num = str(fract_num)[:(lenght_fract + 1)]
+        anti_fraсt_num = fract_num[::-1]
+        for i in anti_fraсt_num:
+            if i == 0:
+                lenght_fract -= 1
+                count -= 1
+            else:
+                break
+    if res_fract == "":
+        return res_int
+    else:
+        return res_int,", ", res_fract
+
+if __name__ == "__main__":
+    num = input("Введите число: ")
+    base = int(input("Введите базу числа: "))
+    base_2 = int(input("Введите базу в которую нужно перевести число: "))
+    print(int_fract(num, base, base_2))
